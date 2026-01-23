@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lagerkontroll - Etterfyllingsregistrering</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛠️ Lagerkontroll</h1>
+            <p class="subtitle">Registrering av behov ved lagergjennomgang</p>
+        </header>
+
+        <!-- Infoboks -->
+        <div class="info-box">
+            <p><strong>⚠️ Viktig:</strong> Dette er registrert behov – ikke lagerbeholdning.</p>
+        </div>
+
+        <!-- Startskjema -->
+        <div id="startView" class="view">
+            <div class="card">
+                <h2>Start ny runde</h2>
+                <form id="startForm">
+                    <div class="form-group">
+                        <label for="location">Lokasjon *</label>
+                        <input type="text" id="location" name="location" required placeholder="F.eks. Lager A">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">Avdeling</label>
+                        <input type="text" id="department" name="department" placeholder="F.eks. Tools Molde">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="csvFilename">CSV-filnavn *</label>
+                        <input type="text" id="csvFilename" name="csvFilename" required placeholder="F.eks. etterfylling">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registeredBy">Registrert av</label>
+                        <input type="text" id="registeredBy" name="registeredBy" placeholder="Ditt navn">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Start runde</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Registreringsvisning -->
+        <div id="registrationView" class="view hidden">
+            <!-- Rundeinfo -->
+            <div class="round-info">
+                <div class="info-item">
+                    <span class="label">Lokasjon:</span>
+                    <span id="displayLocation" class="value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Avdeling:</span>
+                    <span id="displayDepartment" class="value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Dato:</span>
+                    <span id="displayDate" class="value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Uke:</span>
+                    <span id="displayWeek" class="value"></span>
+                </div>
+            </div>
+
+            <!-- Registreringsskjema -->
+            <div class="card">
+                <h2>Registrer artikkel</h2>
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label for="articleNumber">Artikkelnummer *</label>
+                        <input type="text" id="articleNumber" name="articleNumber" required placeholder="Skriv eller scan">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Antall *</label>
+                        <input type="number" id="quantity" name="quantity" required min="1" placeholder="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comment">Kommentar</label>
+                        <textarea id="comment" name="comment" rows="2" placeholder="Valgfri kommentar"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Legg til</button>
+                </form>
+            </div>
+
+            <!-- Registrerte linjer -->
+            <div class="card">
+                <h2>Registrerte linjer (<span id="itemCount">0</span>)</h2>
+                <div id="itemsList" class="items-list">
+                    <p class="empty-message">Ingen linjer registrert ennå.</p>
+                </div>
+            </div>
+
+            <!-- Handlinger -->
+            <div class="actions">
+                <button id="finishRoundBtn" class="btn btn-success">Avslutt runde og eksporter</button>
+                <button id="cancelRoundBtn" class="btn btn-danger">Slett runde / start på nytt</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
