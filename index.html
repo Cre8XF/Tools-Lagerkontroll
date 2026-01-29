@@ -76,7 +76,10 @@
                 <form id="itemForm">
                     <div class="form-group">
                         <label for="articleNumber">Artikkelnummer *</label>
-                        <input type="text" id="articleNumber" name="articleNumber" required placeholder="Skriv eller scan">
+                        <div class="article-input-wrapper">
+                            <input type="text" id="articleNumber" name="articleNumber" required placeholder="Skriv eller scan">
+                            <button type="button" id="scanBtn" class="btn-scan" title="Skann strekkode">📷 Skann</button>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -107,6 +110,16 @@
                 <button id="cancelRoundBtn" class="btn btn-danger">Slett runde / start på nytt</button>
             </div>
         </div>
+    </div>
+
+    <!-- Video-element for kamera (skjult som standard) -->
+    <div id="scannerOverlay" class="scanner-overlay hidden">
+        <video id="scannerVideo" autoplay playsinline></video>
+        <div class="scan-guide">
+            <div class="scan-frame"></div>
+            <p class="scan-instruction">Plasser strekkoden i rammen</p>
+        </div>
+        <button type="button" id="closeScanBtn" class="btn-close-scan" title="Lukk kamera">✕</button>
     </div>
 
     <script src="app.js"></script>
