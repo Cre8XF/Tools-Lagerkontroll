@@ -346,3 +346,211 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+/**
+ * ========================================
+ * STREKKODE-SKANNER MED KAMERA
+ * ========================================
+ */
+
+let scannerStream = null;
+let scannerActive = false;
+let scannerTimeout = null;
+
+const scanBtn = document.getElementById('scanBtn');
+const closeScanBtn = document.getElementById('closeScanBtn');
+const scannerOverlay = document.getElementById('scannerOverlay');
+const scannerVideo = document.getElementById('scannerVideo');
+
+/**
+ * Sjekk om BarcodeDetector er støttet
+ */
+function isBarcodeDetectorSupported() {
+    return 'BarcodeDetector' in window;
+}
+
+/**
+ * Start kamera-skanning
+ */
+async function startScanner() {
+    if (!isBarcodeDetectorSupported()) {
+        alert('⚠️ Strekkode-skanning støttes ikke i denne nettleseren. Vennligst bruk Chrome på Android eller skriv inn artikkelnummer manuelt.');
+        return;
+    }
+
+    try {
+        // Be om kamera-tilgang
+        scannerStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: 'environment', // Bruk bakkamera
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
+            }
+        });
+
+        scannerVideo.srcObject = scannerStream;
+        scannerOverlay.classList.remove('hidden');
+        scannerActive = true;
+
+        // Anvend zoom hvis støttet
+        await applyZoom();
+
+        // Start skanning
+        detectBarcode();
+
+        // Timeout etter 30 sekunder
+        scannerTimeout = setTimeout(() => {
+            stopScanner();
+            alert('⏱️ Skanning tidsavbrutt. Prøv igjen eller skriv inn manuelt.');
+        }, 30000);
+
+    } catch (error) {
+        console.error('Feil ved start av kamera:', error);
+        if (error.name === 'NotAllowedError') {
+            alert('❌ Kamera-tilgang ble nektet. Vennligst gi tillatelse i nettleserinnstillingene.');
+        } else if (error.name === 'NotFoundError') {
+            alert('❌ Fant ikke kamera. Sørg for at enheten har et kamera.');
+        } else {
+            alert('❌ Kunne ikke starte kamera. Prøv igjen eller bruk manuell inntasting.');
+        }
+    }
+}
+
+/**
+ * Anvend zoom hvis støttet
+ */
+async function applyZoom() {
+    if (!scannerStream) return;
+
+    const track = scannerStream.getVideoTracks()[0];
+    const capabilities = track.getCapabilities?.();
+
+    if (capabilities?.zoom) {
+        const minZoom = capabilities.zoom.min || 1;
+        const maxZoom = capabilities.zoom.max || 3;
+        const desiredZoom = Math.min(maxZoom, Math.max(minZoom, 1.8));
+
+        try {
+            await track.applyConstraints({
+                advanced: [{ zoom: desiredZoom }]
+            });
+            console.log(`✓ Zoom anvendt: ${desiredZoom}x`);
+        } catch (error) {
+            console.warn('Kunne ikke anvende zoom:', error);
+        }
+    } else {
+        console.log('ℹ️ Zoom ikke støttet på denne enheten');
+    }
+}
+
+/**
+ * Detekter strekkode kontinuerlig
+ */
+async function detectBarcode() {
+    if (!scannerActive) return;
+
+    try {
+        const barcodeDetector = new BarcodeDetector({
+            formats: ['ean_13', 'ean_8', 'code_128', 'qr_code']
+        });
+
+        const barcodes = await barcodeDetector.detect(scannerVideo);
+
+        if (barcodes.length > 0) {
+            const code = barcodes[0].rawValue;
+            handleScanSuccess(code);
+            return; // Stopp skanning etter første treff
+        }
+    } catch (error) {
+        console.error('Feil ved strekkode-deteksjon:', error);
+    }
+
+    // Fortsett skanning hvis aktiv
+    if (scannerActive) {
+        requestAnimationFrame(detectBarcode);
+    }
+}
+
+/**
+ * Håndter vellykket skanning
+ */
+function handleScanSuccess(code) {
+    // Vibrasjon på mobil
+    if (navigator.vibrate) {
+        navigator.vibrate(200);
+    }
+
+    // Visuell feedback
+    scannerOverlay.classList.add('scan-success');
+
+    setTimeout(() => {
+        // Fyll inn artikkelnummer
+        document.getElementById('articleNumber').value = code;
+
+        // Lukk kamera
+        stopScanner();
+
+        // Flytt fokus til antall-felt
+        document.getElementById('quantity').focus();
+    }, 300);
+}
+
+/**
+ * Stopp kamera-skanning
+ */
+function stopScanner() {
+    scannerActive = false;
+
+    // Stopp alle streams
+    if (scannerStream) {
+        scannerStream.getTracks().forEach(track => track.stop());
+        scannerStream = null;
+    }
+
+    // Skjul overlay
+    scannerOverlay.classList.add('hidden');
+    scannerOverlay.classList.remove('scan-success');
+
+    // Clear timeout
+    if (scannerTimeout) {
+        clearTimeout(scannerTimeout);
+        scannerTimeout = null;
+    }
+}
+
+/**
+ * Event listeners for skanner
+ */
+function initScanner() {
+    // Skjul scan-knapp hvis ikke støttet
+    if (!isBarcodeDetectorSupported()) {
+        if (scanBtn) {
+            scanBtn.style.display = 'none';
+        }
+        return;
+    }
+
+    // Start skanning
+    if (scanBtn) {
+        scanBtn.addEventListener('click', startScanner);
+    }
+
+    // Lukk skanning
+    if (closeScanBtn) {
+        closeScanBtn.addEventListener('click', stopScanner);
+    }
+
+    // Lukk ved tab-skjuling
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && scannerActive) {
+            stopScanner();
+        }
+    });
+}
+
+// Initialiser skanner når DOM er klar
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScanner);
+} else {
+    initScanner();
+}

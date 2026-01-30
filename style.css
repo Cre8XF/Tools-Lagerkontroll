@@ -322,3 +322,152 @@ header h1 {
 .items-list::-webkit-scrollbar-thumb:hover {
     background: #5568d3;
 }
+
+/* ========================================
+   STREKKODE-SKANNER
+   ======================================== */
+
+/* Input wrapper for artikkelfeltet */
+.article-input-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+.article-input-wrapper input {
+    flex: 1;
+}
+
+.btn-scan {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.btn-scan:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Scanner overlay (fullskjerm) */
+.scanner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.scanner-overlay.hidden {
+    display: none;
+}
+
+/* Video-element */
+#scannerVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Skanne-guide (ramme midt på skjermen) */
+.scan-guide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.scan-frame {
+    width: 280px;
+    height: 160px;
+    border: 3px dashed rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+.scan-instruction {
+    color: white;
+    text-align: center;
+    margin-top: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Lukk-knapp */
+.btn-close-scan {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10000;
+}
+
+.btn-close-scan:hover {
+    background: #dc3545;
+    transform: scale(1.1);
+}
+
+/* Suksess-animasjon */
+.scanner-overlay.scan-success::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(40, 167, 69, 0.3);
+    animation: successFlash 0.3s ease-out;
+    pointer-events: none;
+}
+
+@keyframes successFlash {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Mobiloptimalisering for skanner */
+@media (max-width: 600px) {
+    .article-input-wrapper {
+        flex-direction: column;
+    }
+
+    .btn-scan {
+        width: 100%;
+    }
+
+    .scan-frame {
+        width: 240px;
+        height: 140px;
+    }
+
+    .btn-close-scan {
+        width: 44px;
+        height: 44px;
+        font-size: 1.3rem;
+    }
+}

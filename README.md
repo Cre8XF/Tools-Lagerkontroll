@@ -124,6 +124,44 @@ For å slette lagrede data manuelt:
 
 Eller bruk "Slett runde / start på nytt"-knappen i appen.
 
+## 📷 Strekkode-skanning
+
+### Støttede metoder
+
+1. **Kamera-skanning** (Chrome/Android anbefalt)
+   - Trykk på "📷 Skann"-knappen ved artikkelfeltet
+   - Pek kamera mot strekkode eller QR-kode
+   - Koden registreres automatisk ved vellykket skanning
+   - Støtter: EAN-13, EAN-8, Code 128, QR-koder
+
+2. **USB/Bluetooth-skanner**
+   - Koble til skanneren som vanlig
+   - Skann direkte inn i artikkelfeltet
+   - Fungerer som et vanlig tastatur
+
+3. **Manuell inntasting**
+   - Skriv inn artikkelnummer for hånd
+   - Alltid tilgjengelig som backup
+
+### Kamera-funksjonalitet
+
+- **Automatisk zoom**: Kamera starter lett innzoomet (1.8x) for bedre lesbarhet
+- **Timeout**: Kamera lukkes automatisk etter 30 sekunder uten treff
+- **Feedback**: Vibrasjon og visuell bekreftelse ved vellykket skanning
+- **Offline**: Fungerer uten internett etter første lasting
+
+### Nettleserstøtte for kamera
+
+| Nettleser | Støtte | Kommentar |
+|-----------|--------|-----------|
+| Chrome Android | ✅ Anbefalt | Full støtte inkl. zoom |
+| Chrome Desktop | ✅ God | Krever webkamera |
+| Safari iOS | ⚠️ Begrenset | Fungerer, men uten zoom |
+| Firefox Android | ✅ God | Full støtte |
+| Edge Desktop | ✅ God | Krever webkamera |
+
+**Tips:** Hvis kamera-skanning ikke fungerer på din enhet, bruk USB-skanner eller manuell inntasting.
+
 ## 🔧 Teknisk informasjon
 
 ### Teknologi
