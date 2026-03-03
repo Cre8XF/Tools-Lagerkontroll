@@ -427,8 +427,8 @@ async function startScanner() {
         // Anvend zoom hvis støttet
         await applyZoom();
 
-        // Start skanning
-        detectBarcode();
+        // Automatisk skanning er deaktivert – bruker trykker selv på "Les kode"-knappen
+        // detectBarcode();
 
         // Timeout etter 30 sekunder
         scannerTimeout = setTimeout(() => {
@@ -497,10 +497,10 @@ async function detectBarcode() {
         console.error('Feil ved strekkode-deteksjon:', error);
     }
 
-    // Fortsett skanning hvis aktiv
-    if (scannerActive) {
-        requestAnimationFrame(detectBarcode);
-    }
+    // Automatisk gjentagelse er deaktivert – scan kjøres kun på brukertrykk
+    // if (scannerActive) {
+    //     requestAnimationFrame(detectBarcode);
+    // }
 }
 
 /**
@@ -551,6 +551,17 @@ function stopScanner() {
 }
 
 /**
+ * Vis kortvarig feilmelding i overlay uten å lukke kamera
+ * @param {string} message - Melding som vises i 2 sekunder
+ */
+function showScanFeedback(message) {
+    const el = document.getElementById('scanFeedback');
+    el.textContent = message;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 2000);
+}
+
+/**
  * Event listeners for skanner
  */
 function initScanner() {
@@ -565,6 +576,24 @@ function initScanner() {
     // Start skanning
     if (scanBtn) {
         scanBtn.addEventListener('click', startScanner);
+    }
+
+    // Manuell utløser – kjør BarcodeDetector én gang på gjeldende videoframe
+    const captureBtn = document.getElementById('captureBtn');
+    if (captureBtn) {
+        captureBtn.addEventListener('click', async () => {
+            const detector = new BarcodeDetector({ formats: ['ean_13', 'ean_8', 'code_128', 'qr_code'] });
+            try {
+                const barcodes = await detector.detect(scannerVideo);
+                if (barcodes.length > 0) {
+                    handleScanSuccess(barcodes[0].rawValue);
+                } else {
+                    showScanFeedback('Ingen kode funnet – prøv igjen');
+                }
+            } catch (err) {
+                showScanFeedback('Feil ved lesing – prøv igjen');
+            }
+        });
     }
 
     // Lukk skanning
