@@ -87,7 +87,10 @@ function saveRoundToStorage() {
 function startRound(e) {
     e.preventDefault();
 
-    const location = document.getElementById('location').value.trim();
+    const locationSelect = document.getElementById('location');
+    const location = locationSelect.value === '__custom__'
+        ? document.getElementById('locationCustom').value.trim()
+        : locationSelect.value;
     const department = document.getElementById('department').value.trim();
     const csvFilename = document.getElementById('csvFilename').value.trim();
     const registeredBy = document.getElementById('registeredBy').value.trim();
@@ -157,6 +160,12 @@ function addItem(e) {
     saveRoundToStorage();
     updateItemsList();
     itemForm.reset();
+
+    // Vis sist registrerte linje
+    const banner = document.getElementById('lastItemBanner');
+    const lastText = document.getElementById('lastItemText');
+    lastText.textContent = `${item.articleNumber}  ×${item.quantity}${item.comment ? '  – ' + item.comment : ''}`;
+    banner.classList.remove('hidden');
 
     // Sett fokus tilbake til artikkelnummer-feltet
     document.getElementById('articleNumber').focus();
@@ -251,8 +260,8 @@ function escapeCSV(field) {
 
     const stringField = String(field);
 
-    // Hvis feltet inneholder komma, anførselstegn eller linjeskift, må det omsluttes av anførselstegn
-    if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\n')) {
+    // Hvis feltet inneholder semikolon, anførselstegn eller linjeskift, må det omsluttes av anførselstegn
+    if (stringField.includes(';') || stringField.includes('"') || stringField.includes('\n')) {
         // Doble anførselstegn må escapes
         return `"${stringField.replace(/"/g, '""')}"`;
     }
@@ -335,6 +344,29 @@ function init() {
     itemForm.addEventListener('submit', addItem);
     finishRoundBtn.addEventListener('click', finishRound);
     cancelRoundBtn.addEventListener('click', cancelRound);
+
+    // Lokasjon dropdown – vis fritekstfelt ved "Annet"
+    document.getElementById('location').addEventListener('change', function () {
+        const custom = document.getElementById('locationCustom');
+        if (this.value === '__custom__') {
+            custom.style.display = 'block';
+            custom.required = true;
+        } else {
+            custom.style.display = 'none';
+            custom.required = false;
+            custom.value = '';
+        }
+    });
+
+    // +/- knapper for antall
+    document.getElementById('qtyMinus').addEventListener('click', () => {
+        const qty = document.getElementById('quantity');
+        if (parseInt(qty.value) > 1) qty.value = parseInt(qty.value) - 1;
+    });
+    document.getElementById('qtyPlus').addEventListener('click', () => {
+        const qty = document.getElementById('quantity');
+        qty.value = parseInt(qty.value) + 1;
+    });
 
     // Last inn eksisterende runde hvis den finnes
     loadRoundFromStorage();
