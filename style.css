@@ -496,6 +496,51 @@ header h1 {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
+/* Manuell utløser-knapp */
+.btn-capture {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 18px 40px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 10001;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-capture:active {
+    transform: translateX(-50%) scale(0.95);
+    background: #5568d3;
+}
+
+/* Feedback-melding ved mislykket scan */
+.scan-feedback {
+    position: absolute;
+    bottom: 160px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    z-index: 10001;
+    white-space: nowrap;
+}
+
+.scan-feedback.hidden {
+    display: none;
+}
+
 /* Lukk-knapp */
 .btn-close-scan {
     position: absolute;
