@@ -25,7 +25,17 @@
                 <form id="startForm">
                     <div class="form-group">
                         <label for="location">Lokasjon *</label>
-                        <input type="text" id="location" name="location" required placeholder="F.eks. Lager A">
+                        <select id="location" name="location" required>
+                            <option value="">– Velg lokasjon –</option>
+                            <option value="ØST: Spriten">ØST: Spriten</option>
+                            <option value="VEST: Cellulose">VEST: Cellulose</option>
+                            <option value="Kokeri">Kokeri</option>
+                            <option value="ALVA">ALVA</option>
+                            <option value="SENTRALV.">SENTRALV.</option>
+                            <option value="__custom__">Annet (skriv inn)...</option>
+                        </select>
+                        <input type="text" id="locationCustom" name="locationCustom"
+                               placeholder="Skriv inn lokasjon" style="display:none; margin-top:8px;">
                     </div>
 
                     <div class="form-group">
@@ -70,6 +80,12 @@
                 </div>
             </div>
 
+            <!-- Sist registrert-banner -->
+            <div id="lastItemBanner" class="last-item-banner hidden">
+                <span class="last-item-label">✅ Sist lagt til:</span>
+                <span id="lastItemText" class="last-item-text"></span>
+            </div>
+
             <!-- Registreringsskjema -->
             <div class="card">
                 <h2>Registrer artikkel</h2>
@@ -84,7 +100,11 @@
 
                     <div class="form-group">
                         <label for="quantity">Antall *</label>
-                        <input type="number" id="quantity" name="quantity" required min="1" placeholder="1">
+                        <div class="quantity-wrapper">
+                            <button type="button" class="btn-qty" id="qtyMinus">−</button>
+                            <input type="number" id="quantity" name="quantity" required min="1" value="1">
+                            <button type="button" class="btn-qty" id="qtyPlus">+</button>
+                        </div>
                     </div>
 
                     <div class="form-group">
